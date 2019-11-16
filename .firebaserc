@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "iotbeta",
+    "iotbeta": "iotbeta"
+  }
+}

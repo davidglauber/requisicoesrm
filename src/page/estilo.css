@@ -1,0 +1,24 @@
+.figura{
+    width: 100px;
+    height: 100px;
+}
+.caixa {
+    width: 100%
+}
+
+.caixa2 {
+    width: 80%
+}
+.alinhar {
+    flex-direction: row;
+
+}
+.centralizar {
+    flex-direction: row;
+    margin-left: 30%;
+    width: 500px;
+    border-radius: 20px
+}
+.text {
+    flex-direction: row
+}
