@@ -131,13 +131,6 @@ export class PageTop extends React.Component {
           var confirmacao = confirmed[k].confirmacaoID;
 
 
-
-          if(user == null || user == undefined) {
-            e.props.router.push({
-              pathname: '/login'
-            });
-          } 
-
           console.log('usuario confirmado: ' + confirmacao)
           console.log('id do usuario confirmado: ' + user.uid)
 

@@ -28,6 +28,14 @@ export class Chuva extends React.Component {
     let e = this;
     var sensoresAgua = this.state.sensoresAgua;
     firebase.auth().onAuthStateChanged(function(user) { 
+
+      if(user == null || user == undefined) {
+        console.log('entrou no if de usuario nulo')
+        e.props.router.push({
+          pathname: '/login'
+        });
+      } 
+      
       let firebaseGET = firebase.database().ref(`/usuarios/${user.uid}/agua`)
     
         firebaseGET.on('value', (snap) => {
