@@ -27,6 +27,7 @@ export class PageTop extends React.Component {
       idObtido: '',
       email:'',
       senha:'',
+      notificationsUser: [],
       confirmacaoID: false,
       notifications: [{
         user: {
@@ -109,6 +110,7 @@ export class PageTop extends React.Component {
   }
 
   componentDidMount() {
+    const notificationsUser = this.state.notificationsUser;
     const db = firebase.database().ref('usuarios');
 
     let e = this;
@@ -147,6 +149,28 @@ export class PageTop extends React.Component {
     })
 
     }
+
+    //pegar as notificacoes do usuario
+    firebase.auth().onAuthStateChanged(function(user) { 
+      let firebaseGET = firebase.database().ref(`/usuarios/${user.uid}/notificacoes`)
+  
+      firebaseGET.on('value', (snap) => {
+        var notificacoes = [];
+
+        snap.forEach((child) => {
+          notificacoes.push({
+            id: child.val().id,
+            message: child.val().message
+          })
+
+        })
+
+        console.log(notificacoes)
+        e.setState({notificationsUser: notificacoes})
+
+      })  
+    })
+
   }
 
   onToggleMenu() {
@@ -295,6 +319,34 @@ export class PageTop extends React.Component {
     });
   }
 
+  showModalNotifications() {
+    const notificationsUser = this.state.notificationsUser;
+
+    return (
+      <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
+          {notificationsUser.map(l => (
+            <Row>
+                <Col align='center'>
+                    <h4>{l.message}</h4>
+                    <img src={sad} style={{width: 300, height:250}}/>
+                </Col>
+            </Row>
+          ))} 
+      </Modal>
+
+      /*
+      <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
+          <Row>
+            <Col align='center'>
+                <h4>Nenhuma notificação encontrada</h4>
+                <img src={sad} style={{width: 300, height:250}}/>
+            </Col>
+          </Row>
+      </Modal> */
+
+    );
+  }
+
 
   renderUserSection() {
     return (
@@ -353,15 +405,7 @@ export class PageTop extends React.Component {
               </Row>
             </Modal>
 
-            <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
-              <Row>
-                <Col align='center'>
-                 <h4>Nenhuma notificação encontrada</h4>
-                 <img src={sad} style={{width: 300, height:250}}/>
-                </Col>
-              </Row>
-            </Modal>
-
+            {this.showModalNotifications()}
           </Col>
         </Row>
       </div>

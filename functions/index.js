@@ -82,16 +82,16 @@ function makeid(length) {
 exports.notificacaoAgua = functions.https.onRequest((request, response) => {
     const id = makeid(19);
 
-    let refNotificacao = admin.database().ref(`usuarios/${request.query.id}/notificacoes/${id}`).child(`${request.query.idSensor}`);
+    let refNotificacao = admin.database().ref(`usuarios/${request.query.id}/notificacoes`).child(`${request.query.idSensor}`);
     
     refNotificacao.push({
         message: "O sensor detectou um alto nível de água",
-        id: id
+        id: request.query.idSensor
     })
     
     refNotificacao.set({
       message: "O sensor detectou um alto nível de água",
-      id: id
+      id: request.query.idSensor
     }).then(() => {
         response.json({
             message: 'Notificação  cadastrado com sucesso!',
