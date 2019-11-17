@@ -151,25 +151,29 @@ export class PageTop extends React.Component {
     }
 
     //pegar as notificacoes do usuario
-    firebase.auth().onAuthStateChanged(function(user) { 
-      let firebaseGET = firebase.database().ref(`/usuarios/${user.uid}/notificacoes`)
+    try {
+      firebase.auth().onAuthStateChanged(function(user) { 
+        let firebaseGET = firebase.database().ref(`/usuarios/${user.uid}/notificacoes`)
+    
+        firebaseGET.on('value', (snap) => {
+          var notificacoes = [];
   
-      firebaseGET.on('value', (snap) => {
-        var notificacoes = [];
-
-        snap.forEach((child) => {
-          notificacoes.push({
-            id: child.val().id,
-            message: child.val().message
+          snap.forEach((child) => {
+            notificacoes.push({
+              id: child.val().id,
+              message: child.val().message
+            })
+  
           })
-
-        })
-
-        console.log(notificacoes)
-        e.setState({notificationsUser: notificacoes})
-
-      })  
-    })
+  
+          console.log(notificacoes)
+          e.setState({notificationsUser: notificacoes})
+  
+        })  
+      })
+    } catch (error) {
+      console.log(error)
+    }
 
   }
 
@@ -320,31 +324,38 @@ export class PageTop extends React.Component {
   }
 
   showModalNotifications() {
+    console.log('entrou no modal de notificacao')
     const notificationsUser = this.state.notificationsUser;
 
-    return (
-      <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
-          {notificationsUser.map(l => (
+    if(notificationsUser.length > 0) {
+        return(
+          <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
+              {notificationsUser.map(l => (
+                <Row>
+                    <Col align='center'>
+                        <h4>{l.message}</h4>
+                        <img src={sad} style={{width: 300, height:250}}/>
+                    </Col>
+                </Row>
+              ))} 
+          </Modal>
+        );
+    } 
+    
+    if(notificationsUser.length <= 0){
+      console.log('entrou no if da notificacao nula')
+      return(
+        <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
             <Row>
                 <Col align='center'>
-                    <h4>{l.message}</h4>
+                    <h4>Nenhuma notificação encontrada</h4>
                     <img src={sad} style={{width: 300, height:250}}/>
                 </Col>
             </Row>
-          ))} 
-      </Modal>
+        </Modal>
+      );
+    }
 
-      /*
-      <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
-          <Row>
-            <Col align='center'>
-                <h4>Nenhuma notificação encontrada</h4>
-                <img src={sad} style={{width: 300, height:250}}/>
-            </Col>
-          </Row>
-      </Modal> */
-
-    );
   }
 
 
