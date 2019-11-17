@@ -6,7 +6,9 @@ import Person from 'react-blur-admin/dist/assets/img/person.svg';
 import firebase from '../../init/firebase';
 import {SearchBar} from 'src/layout/components/search-bar';
 import sad from '../../sad.gif';
+
 // Lib
+import { IoIosBrush, IoIosCloseCircle } from 'react-icons/io';
 import {MessagesAlert, MessagesAlertContainer, Modal, Input, NotificationsAlert, NotificationAlert} from 'react-blur-admin';
 import {Row, Col} from 'react-flex-proto';
 import { Button } from 'react-blur-admin/dist/button';
@@ -171,6 +173,7 @@ export class PageTop extends React.Component {
   
         })  
       })
+
     } catch (error) {
       console.log(error)
     }
@@ -323,6 +326,12 @@ export class PageTop extends React.Component {
     });
   }
 
+  deletarNotificacoes(e) {
+    firebase.auth().onAuthStateChanged(function(user) {
+      firebase.database().ref(`/usuarios/${user.uid}/notificacoes/${e}`).remove()
+  })
+  }
+
   showModalNotifications() {
     console.log('entrou no modal de notificacao')
     const notificationsUser = this.state.notificationsUser;
@@ -331,12 +340,16 @@ export class PageTop extends React.Component {
         return(
           <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
               {notificationsUser.map(l => (
-                <Row>
-                    <Col align='center'>
-                        <h4>{l.message}</h4>
-                        <img src={sad} style={{width: 300, height:250}}/>
-                    </Col>
-                </Row>
+                <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
+                        <h4 style={{marginTop: 30}}>{l.message}</h4>
+                        
+                        <div style={{flex:1, flexDirection: 'row'}}>
+                            <h4>ID SENSOR: <b>{l.id}</b></h4>
+                            <a href='/' onClick={() => this.deletarNotificacoes(e)}>
+                                    <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
+                            </a>
+                        </div>
+                </div>
               ))} 
           </Modal>
         );
