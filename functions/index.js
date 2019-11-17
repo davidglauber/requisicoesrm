@@ -76,3 +76,31 @@ function makeid(length) {
       })
     })
    });
+
+
+
+exports.notificacaoAgua = functions.https.onRequest((request, response) => {
+    const id = makeid(19);
+
+    let refNotificacao = admin.database().ref(`usuarios/${request.query.id}/notificacoes/${id}`).child(`${request.query.idSensor}`);
+    
+    refNotificacao.push({
+        message: "O sensor detectou um alto nível de água",
+        id: id
+    })
+    
+    refNotificacao.set({
+      message: "O sensor detectou um alto nível de água",
+      id: id
+    }).then(() => {
+        response.json({
+            message: 'Notificação  cadastrado com sucesso!',
+            id
+        })
+    }).catch(() => {
+      response.json({
+          message: 'que bad, não foi dessa vez :(',
+          text
+      })
+    })
+   });

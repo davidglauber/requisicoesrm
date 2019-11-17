@@ -230,7 +230,7 @@ onValueChangePlaceWater = (e, c) => {
     const lampadasDisponiveis = this.state.lampadasDisponiveis;
     const sensoresDeAguaDisponiveis = this.state.sensoresDeAguaDisponiveis;
     const lugaresDisponiveis = this.state.lugaresDisponiveis;
-
+    
     return(
       <Page  title='Sensores e Atuadores'>
       <Panel className='caixa2'>

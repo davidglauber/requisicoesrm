@@ -5,7 +5,7 @@ import { noop } from 'lodash';
 import Person from 'react-blur-admin/dist/assets/img/person.svg';
 import firebase from '../../init/firebase';
 import {SearchBar} from 'src/layout/components/search-bar';
-
+import sad from '../../sad.gif';
 // Lib
 import {MessagesAlert, MessagesAlertContainer, Modal, Input, NotificationsAlert, NotificationAlert} from 'react-blur-admin';
 import {Row, Col} from 'react-flex-proto';
@@ -241,6 +241,10 @@ export class PageTop extends React.Component {
     this.setState({ [modalName2]: false });
   }
 
+  onCloseModalNotifications(modalName3) {
+    this.setState({ [modalName3]: false });
+  }
+
   renderButtonOrID() {
     const confirmacaoID = this.state.confirmacaoID;
 
@@ -265,6 +269,12 @@ export class PageTop extends React.Component {
 
   onRenderModalID(modalName2) {
     this.setState({ [modalName2]: true });
+  }
+
+  onRenderModalNotifications(modalName3) {
+    this.setState({ [modalName3]: true });
+
+    
   }
 
   renderMessages() {
@@ -296,12 +306,17 @@ export class PageTop extends React.Component {
           <ul className="top-dropdown-menu profile-dropdown dropdown-menu">
             <li><i className="dropdown-arr"></i></li>
             <li><Link to="/"><i className="fa fa-user"></i>Profile</Link></li>
-            <li><Link to="/'"><i className="fa fa-cog"></i>Settings</Link></li>
+            <li>
+                <Link onClick={e => this.onRenderModalNotifications('customizedModal3')} to="/">
+                    <i className="fa fa-bell"></i>Notificações
+                </Link>
+            </li>
             <li>
                   <Link to='/login'><i onClick={() => this.onLogout()} className="fa fa-power-off"></i>Sair </Link>
             </li>
           </ul>
         </div>
+        
         <Row>
           <Col padding='5px 2px'>
               {this.renderButtonOrID()}
@@ -337,6 +352,16 @@ export class PageTop extends React.Component {
                 </Col>
               </Row>
             </Modal>
+
+            <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
+              <Row>
+                <Col align='center'>
+                 <h4>Nenhuma notificação encontrada</h4>
+                 <img src={sad} style={{width: 300, height:250}}/>
+                </Col>
+              </Row>
+            </Modal>
+
           </Col>
         </Row>
       </div>
