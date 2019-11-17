@@ -155,7 +155,7 @@ deletarLampadas(e) {
 onValueChangePlace = (e, c) => {
   firebase.auth().onAuthStateChanged(function(user) {
     firebase.database().ref(`/usuarios/${user.uid}/lampadas/${c}`).update({location: e})
-  })
+})
   
   console.log('select one: ' + e)
   console.log('id one: ' + c)

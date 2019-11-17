@@ -2,8 +2,11 @@ import React from 'react';
 import { Link, useHistory } from 'react-router';
 import { Page, Panel, Button, Modal, Select, Input, eventBus } from 'react-blur-admin';
 import { Row, Col } from 'react-flex-proto';
+
 import './estilo.css';
 import lamp from '../lamp.png';
+import agua from '../drop.png';
+
 import firebase from '../init/firebase';
 import { userInfo } from 'os';
 import { IoIosBrush, IoIosCloseCircle } from 'react-icons/io';
@@ -239,7 +242,7 @@ export class Welcome extends React.Component {
                       pathname: '/listalamp',
                       state: {email: emailUsuarioAtual}
                     }}> 
-                      <Button type='info' title="Ver listas de lâmpadas" size='lg' icon={<i className='fa fa-chevron-up' />} />
+                      <Button type='info' title="Ver lista de lâmpadas" size='lg' icon={<i className='fa fa-chevron-up' />} />
                     </Link>
                 </div>
               </div>
@@ -247,12 +250,12 @@ export class Welcome extends React.Component {
             </Col>
 
             <Col padding={5}>
-              <Panel title='Sensores de Chuva'>
+              <Panel title='Sensores de Água'>
                 <div className='red-text'>
-                    <img className="figura" src="https://cdn.iconscout.com/icon/free/png-256/rainy-season-5-1126138.png"></img>
+                <img style={{marginTop: 5, marginRight: 10, width: 70}} className="figura" src={agua}></img>
                     <i>&nbsp;&nbsp;&nbsp;</i>
                       <Link to='/chuva'>
-                        <Button type='info' title="Acessar Informações" size='lg' icon={<i className='fa fa-chevron-up' />} />
+                        <Button type='info' title="Ver lista de sensores" size='lg' icon={<i className='fa fa-chevron-up' />} />
                       </Link>
               </div>
               </Panel>
