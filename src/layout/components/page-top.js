@@ -29,6 +29,7 @@ export class PageTop extends React.Component {
       idObtido: '',
       email:'',
       senha:'',
+      sensorAgua:[],
       notificationsUser: [],
       confirmacaoID: false,
       notifications: [{
@@ -113,6 +114,7 @@ export class PageTop extends React.Component {
 
   componentDidMount() {
     const notificationsUser = this.state.notificationsUser;
+    const sensorAgua = this.state.sensorAgua;
     const db = firebase.database().ref('usuarios');
 
     let e = this;
@@ -177,6 +179,28 @@ export class PageTop extends React.Component {
     } catch (error) {
       console.log(error)
     }
+
+    
+    //pegar lista de sensores de água
+    firebase.auth().onAuthStateChanged(function(user) { 
+      let firebaseGETWater = firebase.database().ref(`/usuarios/${user.uid}/agua`)
+  
+      firebaseGETWater.on('value', (snap) => {
+        var agua = [];
+
+        snap.forEach((child) => {
+          agua.push({
+            id: child.val().id,
+            location: child.val().location,
+            porcentagem: child.val().porcetagem
+          })
+        })
+
+        console.log(agua)
+        e.setState({sensorAgua: agua})
+
+      })  
+    })
 
   }
 
@@ -334,22 +358,30 @@ export class PageTop extends React.Component {
 
   showModalNotifications() {
     console.log('entrou no modal de notificacao')
+
+    const sensorAgua = this.state.sensorAgua;
     const notificationsUser = this.state.notificationsUser;
+
 
     if(notificationsUser.length > 0) {
         return(
           <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
               {notificationsUser.map(l => (
-                <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
-                        <h4 style={{marginTop: 30}}>{l.message}</h4>
-                        
+                sensorAgua.map(i => (
+                  <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
                         <div style={{flex:1, flexDirection: 'row'}}>
-                            <h4>ID SENSOR: <b>{l.id}</b></h4>
-                            <a href='/' onClick={() => this.deletarNotificacoes(e)}>
-                                    <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
-                            </a>
+                          {l.id == i.id && 
+                            <div>
+                                <h4 style={{marginTop: 30}}>{l.message}</h4>
+                                <h4>NOME SENSOR: <b>{i.location}</b></h4>
+                                <a href='/' onClick={() => this.deletarNotificacoes(e)}>
+                                        <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
+                                </a>
+                            </div>
+                          }
                         </div>
                 </div>
+                ))
               ))} 
           </Modal>
         );
