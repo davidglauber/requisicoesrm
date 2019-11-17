@@ -28,7 +28,7 @@ export class Chuva extends React.Component {
   //SELECIONAR LUGAR
   onValueChangePlace = (e, c) => {
     firebase.auth().onAuthStateChanged(function(user) {
-      firebase.database().ref(`/usuarios/${user.uid}/lampadas/${c}`).update({location: e})
+      firebase.database().ref(`/usuarios/${user.uid}/agua/${c}`).update({location: e})
     })
   }
   
