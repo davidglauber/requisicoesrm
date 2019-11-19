@@ -403,6 +403,23 @@ export class PageTop extends React.Component {
 
   }
 
+  renderLengthNotifications() {
+    const listaNotificationsUser = this.state.notificationsUser;
+    
+    if(listaNotificationsUser.length <= 1) {
+        return(
+          <Link onClick={e => this.onRenderModalNotifications('customizedModal3')} to="/">
+                      <i className="fa fa-bell" style={{color:'red'}}> {listaNotificationsUser.length}</i>Notificação
+          </Link>
+        )
+    } else { 
+        return(
+          <Link onClick={e => this.onRenderModalNotifications('customizedModal3')} to="/">
+                      <i className="fa fa-bell" style={{color:'red'}}> {listaNotificationsUser.length}</i>Notificações
+          </Link>
+        )
+    }
+  }
 
   renderUserSection() {
     const listaNotificationsUser = this.state.notificationsUser;
@@ -418,9 +435,7 @@ export class PageTop extends React.Component {
             <li><i className="dropdown-arr"></i></li>
             <li><Link to="/"><i className="fa fa-user"></i>Profile</Link></li>
             <li>
-                <Link onClick={e => this.onRenderModalNotifications('customizedModal3')} to="/">
-                    <i className="fa fa-bell" style={{color:'red'}}> {listaNotificationsUser.length}</i>Notificações
-                </Link>
+               {this.renderLengthNotifications()}
             </li>
             <li>
                   <Link to='/login'><i onClick={() => this.onLogout()} className="fa fa-power-off"></i>Sair </Link>
