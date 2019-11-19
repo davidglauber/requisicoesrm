@@ -10,23 +10,24 @@ export default class Cadastrar extends React.Component {
     this.state = {
       lampadas:[], 
       email: '',
-      password:''
+      password:'',
+      passwordCheck:''
     };
   }
 
- async cadastrarFirebase(){
+ cadastrarFirebase(){
     
-        try {
-            await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+    if(this.state.password !== this.state.passwordCheck) {
+
+      alert('As senhas não coincidem!')
+    } else {
+        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
             
-            eventBus.addNotification('success', 'Você foi Cadastrado com Sucesso')
+            alert('Você foi Cadastrado com Sucesso')
             this.props.history.push('/login')
     
-        } catch (error) {
-          alert('O usuário já está em uso')
-            console.log("Error: " + error.toString());
-        }
-   
+    }
+
   }
 
 
@@ -38,15 +39,19 @@ onChangePass = (e) => {
     this.setState({password: e.target.value })
 }
 
+onChangePassCheck = (e) => {
+  console.log('confirmacao de senha: '  + e.target.value)
+    this.setState({passwordCheck: e.target.value })
+}
+
+
 
   render() {
     return (
       <Page>
         <Panel className='centralizar'>
-        <h1><b style={{color: 'blue'}}>Auto</b>
-        <b style={{color: 'yellow'}}>House_</b></h1>
-        <img style={{ textAlign: 'center' , width: 500}} src={logo}></img>
-          <h6><a style={{color:'white'}}>Digite seu email e senha para se cadastrar na plataforma</a></h6>
+        <img style={{ textAlign: 'center' , width: 300, marginLeft: 70}} src={logo}></img>
+          <h6><a style={{color:'white', marginLeft: 50}}>Digite seu email e senha para se cadastrar na plataforma</a></h6>
           <br/>
           <Input
             label='Email'
@@ -60,6 +65,13 @@ onChangePass = (e) => {
             placeholder='Digite a sua senha'
             onChange= {this.onChangePass}
             value={this.state.password}
+            type='password' 
+          />
+          <Input
+            label='Confirmação de Senha'
+            placeholder='Confirme a sua senha'
+            onChange= {this.onChangePassCheck}
+            value={this.state.passwordCheck}
             type='password' 
           />
 

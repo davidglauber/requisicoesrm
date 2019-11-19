@@ -405,6 +405,9 @@ export class PageTop extends React.Component {
 
 
   renderUserSection() {
+    const listaNotificationsUser = this.state.notificationsUser;
+
+
     return (
       <div className="user-profile clearfix">
         <div className={`al-user-profile dropdown ${this.state.isMenuOpen ? 'open' : ''}`}>
@@ -416,7 +419,7 @@ export class PageTop extends React.Component {
             <li><Link to="/"><i className="fa fa-user"></i>Profile</Link></li>
             <li>
                 <Link onClick={e => this.onRenderModalNotifications('customizedModal3')} to="/">
-                    <i className="fa fa-bell"></i>Notificações
+                    <i className="fa fa-bell" style={{color:'red'}}> {listaNotificationsUser.length}</i>Notificações
                 </Link>
             </li>
             <li>

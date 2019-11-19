@@ -41,7 +41,7 @@ onChangePass = (e) => {
       <Page>
         <Panel className='centralizar'>
         <div style={{alignItems: 'center'}}>
-          <img style={{ textAlign: 'center' , width: 300}} src={logo}></img>
+          <img style={{ textAlign: 'center', alignItems:'center' , marginLeft:70, width: 300}} src={logo}></img>
         </div>
           <Input
             label='Email'
