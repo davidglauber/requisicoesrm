@@ -31,6 +31,7 @@ export class PageTop extends React.Component {
       senha:'',
       sensorAgua:[],
       lampadas:[],
+      listaSensoresPresenca: [],
       listaGeral: [],
       notificationsUser: [],
       confirmacaoID: false,
@@ -118,6 +119,7 @@ export class PageTop extends React.Component {
     const notificationsUser = this.state.notificationsUser;
     const sensorAgua = this.state.sensorAgua;
     const lampadas = this.state.lampadas;
+    const listaSensoresPresenca = this.state.listaSensoresPresenca;
 
     const db = firebase.database().ref('usuarios');
 
@@ -229,6 +231,30 @@ export class PageTop extends React.Component {
 
     })
 
+
+    //pegar lista de sensores de presença
+    firebase.auth().onAuthStateChanged(function(user) { 
+      let firebaseGETLAMP = firebase.database().ref(`/usuarios/${user.uid}/presenca`)
+  
+      firebaseGETLAMP.on('value', (snap) => {
+        var presenca = [];
+
+        snap.forEach((child) => {
+          presenca.push({
+            id: child.val().id,
+            location: child.val().location,
+            movimento: child.val().movimento
+          })
+        })
+
+        e.setState({listaSensoresPresenca: presenca})
+
+        console.log(presenca)
+        console.log('lista geral do array: '  + sensorAgua.concat(lampadas))
+      })  
+      e.setState({listaGeral: sensorAgua.concat(lampadas)})
+
+    })
 
   }
 
@@ -390,6 +416,7 @@ export class PageTop extends React.Component {
     const sensorAgua = this.state.sensorAgua;
     const notificationsUser = this.state.notificationsUser;
     const lampadas = this.state.lampadas;
+    const listaSensoresPresenca = this.state.listaSensoresPresenca;
 
     
     if(notificationsUser.length > 0) {
@@ -403,7 +430,7 @@ export class PageTop extends React.Component {
                           {l.id == i.id && 
                             <div>
                                 <h4 style={{marginTop: 30}}>{l.message}</h4>
-                                <h4>NOME SENSOR: <b>{i.location}</b></h4>
+                                <h4>LUGAR DO SENSOR: <b>{i.location}</b></h4>
                                 <h4>ID SENSOR: <b>{i.id}</b></h4>
                                 <a href='/' onClick={() => this.deletarNotificacoes(e)}>
                                         <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
@@ -416,7 +443,7 @@ export class PageTop extends React.Component {
 
               ))} 
 
-            <h3 style={{marginTop:20}}><b>Lâmpadas</b></h3>
+            <h3 style={{marginTop:100}}><b>Lâmpadas</b></h3>
               {notificationsUser.map(l => (
                 lampadas.map(i => (
                   <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
@@ -424,7 +451,30 @@ export class PageTop extends React.Component {
                           {l.id == i.id && 
                             <div>
                                 <h4 style={{marginTop: 30}}>{l.message}</h4>
-                                <h4>NOME SENSOR: <b>{i.location}</b></h4>
+                                <h4>LUGAR DO SENSOR: <b>{i.location}</b></h4>
+                                <h4>ID SENSOR: <b>{i.id}</b></h4>
+                                <a href='/' onClick={() => this.deletarNotificacoes(e)}>
+                                        <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
+                                </a>
+                            </div>
+                          }
+                        </div>
+                </div>
+                ))
+
+              ))} 
+
+
+
+            <h3 style={{marginTop:100}}><b>Sensores de Presença</b></h3>
+              {notificationsUser.map(l => (
+                listaSensoresPresenca.map(i => (
+                  <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
+                        <div style={{flex:1, flexDirection: 'row', alignContent:'center', alignItems:'center'}}>
+                          {l.id == i.id && 
+                            <div>
+                                <h4 style={{marginTop: 30}}>{l.message}</h4>
+                                <h4>LUGAR DO SENSOR: <b>{i.location}</b></h4>
                                 <h4>ID SENSOR: <b>{i.id}</b></h4>
                                 <a href='/' onClick={() => this.deletarNotificacoes(e)}>
                                         <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>

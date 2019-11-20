@@ -271,7 +271,7 @@ onValueChangePlaceWater = (e, c) => {
     const listaDePresenca = this.state.listaDePresenca;
     
     return(
-      <Page  title='Sensores e Atuadores'>
+    <Page  title='Sensores e Atuadores'>
       <Panel className='caixa2'>
         <Table>
           <TableHead>
