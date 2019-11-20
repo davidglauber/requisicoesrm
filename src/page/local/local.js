@@ -5,6 +5,7 @@ import { Row, Col } from 'react-flex-proto';
 import firebase from '../../init/firebase';
 import lamp from '../../lamp.png';
 import agua from '../../drop.png';
+import presenca from '../../presenca.png';
 import lampOff from '../../lampOFF.png';
 import '../estilo.css';
 import { IoIosBrush, IoIosCloseCircle } from 'react-icons/io';
@@ -18,6 +19,7 @@ export class Local extends React.Component {
       lampadasDisponiveis: [],
       sensoresDeAguaDisponiveis: [],
       lugaresDisponiveis: [],
+      listaDePresenca: [],
       idSelecionado: '',
       emailParam:'',
       location: this.props.location.state.location,
@@ -42,6 +44,7 @@ export class Local extends React.Component {
     var lampadasDisponiveis = this.state.lampadasDisponiveis;
     var lugaresDisponiveis = this.state.lugaresDisponiveis;
     var sensoresDeAguaDisponiveis = this.state.sensoresDeAguaDisponiveis;
+    var listaDePresenca = this.state.listaDePresenca;
 
     let e = this;
 
@@ -126,6 +129,35 @@ export class Local extends React.Component {
 })
 
 
+
+//sensores de presença
+firebase.auth().onAuthStateChanged(function(user) {
+  let firebaseGET = firebase.database().ref(`/usuarios/${user.uid}/presenca`)
+
+  firebaseGET.on('value', (snap) => {
+    var presenca = [];
+
+    snap.forEach((child) => {
+
+      if(e.state.location == child.val().location) {
+          presenca.push({
+            id: child.val().id,
+            location: child.val().location,
+            movimento: child.val().movimento
+          })
+      } else {
+        return null
+      }
+
+    })
+
+    listaDePresenca = presenca
+    e.setState({listaDePresenca: presenca})
+  })
+
+
+})
+
   }
 
 
@@ -201,6 +233,12 @@ deletarChuva(e) {
 })
 }
 
+deletarPresenca(e) {
+  firebase.auth().onAuthStateChanged(function(user) {
+    firebase.database().ref(`/usuarios/${user.uid}/presenca/${e}`).remove()
+})
+}
+
 //SELECIONAR LUGAR LAMPADA
 onValueChangePlace = (e, c) => {
   firebase.auth().onAuthStateChanged(function(user) {
@@ -230,6 +268,7 @@ onValueChangePlaceWater = (e, c) => {
     const lampadasDisponiveis = this.state.lampadasDisponiveis;
     const sensoresDeAguaDisponiveis = this.state.sensoresDeAguaDisponiveis;
     const lugaresDisponiveis = this.state.lugaresDisponiveis;
+    const listaDePresenca = this.state.listaDePresenca;
     
     return(
       <Page  title='Sensores e Atuadores'>
@@ -330,6 +369,59 @@ onValueChangePlaceWater = (e, c) => {
 
                         <td>
                           <a href='#' onClick={() => this.deletarChuva(l.id)}>
+                            <IoIosCloseCircle size={25} style={{marginTop: 10, marginLeft:10}} color='#e85656'/>
+                          </a>
+                        </td>
+
+                </TableRow>
+          ))}
+          </TableBody>
+        </Table>
+        <Row>
+        </Row>
+      </Panel>
+
+
+
+
+
+      <Panel className='caixa2'>
+        <Table>
+          <TableHead>
+            <th>Sensor</th>
+            <th>Lugar</th>
+            <th>Detecção de Movimento</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Deletar</th>
+          </TableHead>
+          <TableBody>
+          {listaDePresenca.map(l => (
+                <TableRow>
+                    <td> 
+                        <img src={presenca} style={{width: 30, height: 40, marginTop: 10,  marginBottom: 10}} />
+                    </td>
+                        <td>
+                              <Row>
+                                  <Col>
+                                    <Select
+                                      placeholder={l.location}
+                                      value={this.state.selectOne2}
+                                      options={lugaresDisponiveis}
+                                      onChange={value => this.onValueChangePlaceWater(value, l.id)}
+                                      />
+                                  </Col>
+                              </Row>
+                        </td>
+                    <td>{l.movimento}</td>
+
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                        <td>
+                          <a href='#' onClick={() => this.deletarPresenca(l.id)}>
                             <IoIosCloseCircle size={25} style={{marginTop: 10, marginLeft:10}} color='#e85656'/>
                           </a>
                         </td>

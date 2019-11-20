@@ -79,6 +79,40 @@ function makeid(length) {
 
 
 
+   //sensor de presença
+ exports.presenca = functions.https.onRequest((request, response) => {
+    const id = makeid(19);
+    console.log('seu id: ' + id)
+  
+    let refPresenca = admin.database().ref(`usuarios/${request.query.id}/presenca`).child(`${id}`);
+  
+    refPresenca.push({
+        movimento:"SEM MOVIMENTO",
+        location: "PADRAO",
+        id: id
+    })
+    
+    refPresenca.set({
+      movimento:"SEM MOVIMENTO",
+      location: "PADRAO",
+      id: id
+    }).then(() => {
+        response.json({
+            message: 'Sensor de presença cadastrado com sucesso!',
+            id
+        })
+    }).catch(() => {
+      response.json({
+          message: 'que bad, não foi dessa vez :(',
+          text
+      })
+    })
+   });
+
+
+
+
+
 exports.notificacao = functions.https.onRequest((request, response) => {
     const id = makeid(19);
 
@@ -104,3 +138,4 @@ exports.notificacao = functions.https.onRequest((request, response) => {
       })
     })
    });
+

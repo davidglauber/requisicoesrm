@@ -6,6 +6,7 @@ import { Row, Col } from 'react-flex-proto';
 import './estilo.css';
 import lamp from '../lamp.png';
 import agua from '../drop.png';
+import presenca from '../presenca.png';
 
 import firebase from '../init/firebase';
 import { userInfo } from 'os';
@@ -262,12 +263,12 @@ export class Welcome extends React.Component {
             </Col>
 
             <Col padding={5}>
-              <Panel title='Sensores de Proximidade'>
+              <Panel title='Sensores de Presença'>
                 <div className='red-text'>
-                    <img className="figura" src="http://www.fdlgroup.gr/wp-content/uploads/2018/01/load-sensor-brilliantile.png"></img>
+                    <img className="figura" src={presenca}></img>
                     <i>&nbsp;&nbsp;&nbsp;</i>
-                      <Link to='/proximidade'>
-                        <Button  type='info' title="Acessar Informações" size='lg' icon={<i className='fa fa-chevron-up' />} />
+                      <Link to='/presenca'>
+                        <Button  type='info' title="Ver listas de sensores" size='lg' icon={<i className='fa fa-chevron-up' />} />
                       </Link>
               </div>
               </Panel>
