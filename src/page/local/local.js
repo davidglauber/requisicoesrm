@@ -8,6 +8,7 @@ import agua from '../../drop.png';
 import presenca from '../../presenca.png';
 import lampOff from '../../lampOFF.png';
 import umidade from '../../umidade.png';
+import temperatura from '../../cold.png';
 
 import '../estilo.css';
 import { IoIosBrush, IoIosCloseCircle } from 'react-icons/io';
@@ -23,13 +24,15 @@ export class Local extends React.Component {
       lugaresDisponiveis: [],
       listaDePresenca: [],
       listaDeUmidade: [],
+      listaDeTemperatura: [],
       idSelecionado: '',
       emailParam:'',
       location: this.props.location.state.location,
       selectOne: '',
       selectOne2:'',
       selectOne3:'',
-      selectOne4:''
+      selectOne4:'', 
+      selectOne5:''
     };
   }
 
@@ -51,6 +54,7 @@ export class Local extends React.Component {
     var sensoresDeAguaDisponiveis = this.state.sensoresDeAguaDisponiveis;
     var listaDePresenca = this.state.listaDePresenca;
     var listaDeUmidade = this.state.listaDeUmidade;
+    var listaDeTemperatura = this.state.listaDeTemperatura;
 
     let e = this;
 
@@ -195,6 +199,39 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 })
 
+
+
+
+//sensores de temperatura
+firebase.auth().onAuthStateChanged(function(user) {
+  let firebaseGET = firebase.database().ref(`/usuarios/${user.uid}/temperatura`)
+
+  firebaseGET.on('value', (snap) => {
+    var temp = [];
+
+    snap.forEach((child) => {
+
+      if(e.state.location == child.val().location) {
+          temp.push({
+            id: child.val().id,
+            location: child.val().location,
+            temperatura: child.val().temperatura
+          })
+      } else {
+        return null
+      }
+
+    })
+
+    listaDeTemperatura = temp
+    e.setState({listaDeTemperatura: temp})
+  })
+
+
+})
+
+
+
   }
 
 
@@ -283,6 +320,12 @@ deletarUmidade(e) {
 }
 
 
+deletarTemperatura(e) {
+  firebase.auth().onAuthStateChanged(function(user) {
+    firebase.database().ref(`/usuarios/${user.uid}/temperatura/${e}`).remove()
+})
+}
+
 
 //SELECIONAR LUGAR LAMPADA
 onValueChangePlace = (e, c) => {
@@ -335,6 +378,18 @@ onValueChangeUmidade = (e, c) => {
 }
 
 
+//SELECIONAR LUGAR SENSOR DE TEMPERATURA
+onValueChangeTemperatura = (e, c) => {
+  firebase.auth().onAuthStateChanged(function(user) {
+    firebase.database().ref(`/usuarios/${user.uid}/temperatura/${c}`).update({location: e})
+  })
+
+  console.log('select one: ' + e)
+  console.log('id one: ' + c)
+  this.setState({selectOne5: e.target.value})
+}
+
+
 
   renderListOfSensors() {
     const lampadasDisponiveis = this.state.lampadasDisponiveis;
@@ -342,6 +397,7 @@ onValueChangeUmidade = (e, c) => {
     const lugaresDisponiveis = this.state.lugaresDisponiveis;
     const listaDePresenca = this.state.listaDePresenca;
     const listaDeUmidade = this.state.listaDeUmidade;
+    const listaDeTemperatura = this.state.listaDeTemperatura;
 
     return(
     <Page  title='Sensores e Atuadores'>
@@ -559,6 +615,60 @@ onValueChangeUmidade = (e, c) => {
         <Row>
         </Row>
       </Panel>
+
+
+
+
+
+      <Panel className='caixa2'>
+        <Table>
+          <TableHead>
+            <th>Sensor</th>
+            <th>Lugar</th>
+            <th>Temperatura</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Deletar</th>
+          </TableHead>
+          <TableBody>
+          {listaDeTemperatura.map(l => (
+                <TableRow>
+                    <td> 
+                        <img src={temperatura} style={{width: 30, height: 40, marginTop: 10,  marginBottom: 10}} />
+                    </td>
+                        <td>
+                              <Row>
+                                  <Col>
+                                    <Select
+                                      placeholder={l.location}
+                                      value={this.state.selectOne4}
+                                      options={lugaresDisponiveis}
+                                      onChange={value => this.onValueChangeTemperatura(value, l.id)}
+                                      />
+                                  </Col>
+                              </Row>
+                        </td>
+                    <td>{l.temperatura}</td>
+
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                        <td>
+                          <a href='#' onClick={() => this.deletarTemperatura(l.id)}>
+                            <IoIosCloseCircle size={25} style={{marginTop: 10, marginLeft:10}} color='#e85656'/>
+                          </a>
+                        </td>
+
+                </TableRow>
+          ))}
+          </TableBody>
+        </Table>
+        <Row>
+        </Row>
+      </Panel>
+
 
     </Page>  
 

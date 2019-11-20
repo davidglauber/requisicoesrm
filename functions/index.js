@@ -144,6 +144,38 @@ function makeid(length) {
 
 
 
+//sensor de temperatura
+exports.temperatura = functions.https.onRequest((request, response) => {
+    const id = makeid(19);
+    console.log('seu id: ' + id)
+  
+    let refTemperatura = admin.database().ref(`usuarios/${request.query.id}/temperatura`).child(`${id}`);
+  
+    refTemperatura.push({
+        temperatura: "Não definida",
+        location: "PADRAO",
+        id: id
+    })
+    
+    refTemperatura.set({
+      temperatura: "Não definida",
+      location: "PADRAO",
+      id: id
+    }).then(() => {
+        response.json({
+            message: 'Sensor de presença cadastrado com sucesso!',
+            id
+        })
+    }).catch(() => {
+      response.json({
+          message: 'que bad, não foi dessa vez :(',
+          text
+      })
+    })
+   });
+
+
+
 exports.notificacao = functions.https.onRequest((request, response) => {
     const id = makeid(19);
 

@@ -10,6 +10,7 @@ import  Cadastrar  from 'src/page/cadastrar';
 import { Chuva } from '../page/chuva/chuva';
 import { cadLamp } from 'src/page/cadLamp';
 import { Local } from '../page/local/local';
+import {  Temperatura } from '../page/temperatura/temperatura';
 import { ListaLamp } from '../page/lampada/lampadas';
 import { Umidade } from '../page/umidade/umidade';
 import { Presenca } from 'src/page/presenca/presenca';
@@ -28,7 +29,7 @@ import { NotificationsDemo } from 'src/page/notifications-demo';
 import { NotFound } from 'src/page/not-found';
 
 // Redirect is got GH pages and can be deleted for forked projects
-const redirect = <Redirect from="/react-webpack-skeleton" to="/" />;
+const redirect = <Redirect from="/react-webpack-skeleton" to="/login" />;
 
 export const AppRouter = (
   <Router history={browserHistory}>
@@ -47,6 +48,7 @@ export const AppRouter = (
       <Route path='/cadastrarlampada' component={cadLamp} />
       <Route path='/listalamp' component={ListaLamp} />
       <Route path='/presenca' component={Presenca} />
+      <Route path='/temperatura' component={Temperatura} />
       <Route path='/umidade' component={Umidade} />
       <Route path='/table-demo' component={TableDemo} />
       <Route path='/tabs-demo' component={TabsDemo} />
