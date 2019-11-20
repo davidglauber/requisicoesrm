@@ -79,7 +79,7 @@ function makeid(length) {
 
 
 
-   //sensor de presença
+//sensor de presença
  exports.presenca = functions.https.onRequest((request, response) => {
     const id = makeid(19);
     console.log('seu id: ' + id)
@@ -110,6 +110,37 @@ function makeid(length) {
    });
 
 
+
+
+//sensor de umidade
+ exports.umidade = functions.https.onRequest((request, response) => {
+  const id = makeid(19);
+  console.log('seu id: ' + id)
+
+  let refUmidade = admin.database().ref(`usuarios/${request.query.id}/umidade`).child(`${id}`);
+
+  refUmidade.push({
+      status:"SEM UMIDADE",
+      location: "PADRAO",
+      id: id
+  })
+  
+  refUmidade.set({
+    status:"SEM UMIDADE",
+    location: "PADRAO",
+    id: id
+  }).then(() => {
+      response.json({
+          message: 'Sensor de presença cadastrado com sucesso!',
+          id
+      })
+  }).catch(() => {
+    response.json({
+        message: 'que bad, não foi dessa vez :(',
+        text
+    })
+  })
+ });
 
 
 

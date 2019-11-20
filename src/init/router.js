@@ -11,6 +11,7 @@ import { Chuva } from '../page/chuva/chuva';
 import { cadLamp } from 'src/page/cadLamp';
 import { Local } from '../page/local/local';
 import { ListaLamp } from '../page/lampada/lampadas';
+import { Umidade } from '../page/umidade/umidade';
 import { Presenca } from 'src/page/presenca/presenca';
 import { About } from 'src/page/about';
 import { editarSensorChuva } from '../page/chuva/editarSensorChuva';
@@ -46,6 +47,7 @@ export const AppRouter = (
       <Route path='/cadastrarlampada' component={cadLamp} />
       <Route path='/listalamp' component={ListaLamp} />
       <Route path='/presenca' component={Presenca} />
+      <Route path='/umidade' component={Umidade} />
       <Route path='/table-demo' component={TableDemo} />
       <Route path='/tabs-demo' component={TabsDemo} />
       <Route path='/input-demo' component={InputDemo} />

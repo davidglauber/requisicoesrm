@@ -7,6 +7,7 @@ import './estilo.css';
 import lamp from '../lamp.png';
 import agua from '../drop.png';
 import presenca from '../presenca.png';
+import umidade from '../umidade.png';
 
 import firebase from '../init/firebase';
 import { userInfo } from 'os';
@@ -268,6 +269,18 @@ export class Welcome extends React.Component {
                     <img className="figura" src={presenca}></img>
                     <i>&nbsp;&nbsp;&nbsp;</i>
                       <Link to='/presenca'>
+                        <Button  type='info' title="Ver listas de sensores" size='lg' icon={<i className='fa fa-chevron-up' />} />
+                      </Link>
+              </div>
+              </Panel>
+            </Col>
+
+            <Col padding={5}>
+              <Panel title='Sensores de Umidade'>
+                <div className='red-text'>
+                    <img className="figura" src={umidade}></img>
+                    <i>&nbsp;&nbsp;&nbsp;</i>
+                      <Link to='/umidade'>
                         <Button  type='info' title="Ver listas de sensores" size='lg' icon={<i className='fa fa-chevron-up' />} />
                       </Link>
               </div>
