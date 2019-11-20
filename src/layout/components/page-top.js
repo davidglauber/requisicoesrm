@@ -30,6 +30,8 @@ export class PageTop extends React.Component {
       email:'',
       senha:'',
       sensorAgua:[],
+      lampadas:[],
+      listaGeral: [],
       notificationsUser: [],
       confirmacaoID: false,
       notifications: [{
@@ -115,6 +117,8 @@ export class PageTop extends React.Component {
   componentDidMount() {
     const notificationsUser = this.state.notificationsUser;
     const sensorAgua = this.state.sensorAgua;
+    const lampadas = this.state.lampadas;
+
     const db = firebase.database().ref('usuarios');
 
     let e = this;
@@ -196,11 +200,35 @@ export class PageTop extends React.Component {
           })
         })
 
-        console.log(agua)
         e.setState({sensorAgua: agua})
-
+        console.log(sensorAgua)
       })  
     })
+
+    //pegar lista de lampadas
+    firebase.auth().onAuthStateChanged(function(user) { 
+      let firebaseGETLAMP = firebase.database().ref(`/usuarios/${user.uid}/lampadas`)
+  
+      firebaseGETLAMP.on('value', (snap) => {
+        var lamps = [];
+
+        snap.forEach((child) => {
+          lamps.push({
+            id: child.val().id,
+            location: child.val().location,
+            status: child.val().status
+          })
+        })
+
+        e.setState({lampadas: lamps})
+
+        console.log(lamps)
+        console.log('lista geral do array: '  + sensorAgua.concat(lampadas))
+      })  
+      e.setState({listaGeral: sensorAgua.concat(lampadas)})
+
+    })
+
 
   }
 
@@ -361,19 +389,22 @@ export class PageTop extends React.Component {
 
     const sensorAgua = this.state.sensorAgua;
     const notificationsUser = this.state.notificationsUser;
+    const lampadas = this.state.lampadas;
 
-
+    
     if(notificationsUser.length > 0) {
         return(
           <Modal type='danger' buttonText='Sair' title='Notificações Recebidas' isOpen={this.state.customizedModal3} onClose={e => this.onCloseModalNotifications('customizedModal3')}>
+              <h3 style={{marginTop:10}}><b>Sensor de Chuva</b></h3>
               {notificationsUser.map(l => (
                 sensorAgua.map(i => (
                   <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
-                        <div style={{flex:1, flexDirection: 'row'}}>
+                        <div style={{flex:1, flexDirection: 'row', alignContent:'center', alignItems:'center'}}>
                           {l.id == i.id && 
                             <div>
                                 <h4 style={{marginTop: 30}}>{l.message}</h4>
                                 <h4>NOME SENSOR: <b>{i.location}</b></h4>
+                                <h4>ID SENSOR: <b>{i.id}</b></h4>
                                 <a href='/' onClick={() => this.deletarNotificacoes(e)}>
                                         <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
                                 </a>
@@ -382,6 +413,28 @@ export class PageTop extends React.Component {
                         </div>
                 </div>
                 ))
+
+              ))} 
+
+            <h3 style={{marginTop:20}}><b>Lâmpadas</b></h3>
+              {notificationsUser.map(l => (
+                lampadas.map(i => (
+                  <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
+                        <div style={{flex:1, flexDirection: 'row', alignContent:'center', alignItems:'center'}}>
+                          {l.id == i.id && 
+                            <div>
+                                <h4 style={{marginTop: 30}}>{l.message}</h4>
+                                <h4>NOME SENSOR: <b>{i.location}</b></h4>
+                                <h4>ID SENSOR: <b>{i.id}</b></h4>
+                                <a href='/' onClick={() => this.deletarNotificacoes(e)}>
+                                        <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
+                                </a>
+                            </div>
+                          }
+                        </div>
+                </div>
+                ))
+
               ))} 
           </Modal>
         );
