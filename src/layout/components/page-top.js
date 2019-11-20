@@ -31,6 +31,7 @@ export class PageTop extends React.Component {
       senha:'',
       sensorAgua:[],
       lampadas:[],
+      listaUmidade:[],
       listaSensoresPresenca: [],
       listaGeral: [],
       notificationsUser: [],
@@ -118,6 +119,7 @@ export class PageTop extends React.Component {
   componentDidMount() {
     const notificationsUser = this.state.notificationsUser;
     const sensorAgua = this.state.sensorAgua;
+    const listaUmidade = this.state.listaUmidade;
     const lampadas = this.state.lampadas;
     const listaSensoresPresenca = this.state.listaSensoresPresenca;
 
@@ -250,6 +252,32 @@ export class PageTop extends React.Component {
         e.setState({listaSensoresPresenca: presenca})
 
         console.log(presenca)
+        console.log('lista geral do array: '  + sensorAgua.concat(lampadas))
+      })  
+      e.setState({listaGeral: sensorAgua.concat(lampadas)})
+
+    })
+
+
+
+
+    //pegar lista de sensores de umidade
+    firebase.auth().onAuthStateChanged(function(user) { 
+      let firebaseGETLAMP = firebase.database().ref(`/usuarios/${user.uid}/umidade`)
+  
+      firebaseGETLAMP.on('value', (snap) => {
+        var umidade = [];
+
+        snap.forEach((child) => {
+          umidade.push({
+            id: child.val().id,
+            location: child.val().location,
+            status: child.val().status
+          })
+        })
+
+        e.setState({listaUmidade: umidade})
+
         console.log('lista geral do array: '  + sensorAgua.concat(lampadas))
       })  
       e.setState({listaGeral: sensorAgua.concat(lampadas)})
@@ -417,6 +445,7 @@ export class PageTop extends React.Component {
     const notificationsUser = this.state.notificationsUser;
     const lampadas = this.state.lampadas;
     const listaSensoresPresenca = this.state.listaSensoresPresenca;
+    const listaUmidade = this.state.listaUmidade;
 
     
     if(notificationsUser.length > 0) {
@@ -469,6 +498,30 @@ export class PageTop extends React.Component {
             <h3 style={{marginTop:100}}><b>Sensores de Presença</b></h3>
               {notificationsUser.map(l => (
                 listaSensoresPresenca.map(i => (
+                  <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
+                        <div style={{flex:1, flexDirection: 'row', alignContent:'center', alignItems:'center'}}>
+                          {l.id == i.id && 
+                            <div>
+                                <h4 style={{marginTop: 30}}>{l.message}</h4>
+                                <h4>LUGAR DO SENSOR: <b>{i.location}</b></h4>
+                                <h4>ID SENSOR: <b>{i.id}</b></h4>
+                                <a href='/' onClick={() => this.deletarNotificacoes(e)}>
+                                        <IoIosCloseCircle size={25} onClick={() => this.deletarNotificacoes(l.id)} style={{marginTop: 10}} color='#e85656'/>
+                                </a>
+                            </div>
+                          }
+                        </div>
+                </div>
+                ))
+
+              ))} 
+
+
+
+
+            <h3 style={{marginTop:100}}><b>Sensores de Umidade</b></h3>
+              {notificationsUser.map(l => (
+                listaUmidade.map(i => (
                   <div style={{marginTop: 10, backgroundColor:'#FBF8EF', borderRadius: 5}}>
                         <div style={{flex:1, flexDirection: 'row', alignContent:'center', alignItems:'center'}}>
                           {l.id == i.id && 
