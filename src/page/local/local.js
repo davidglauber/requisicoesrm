@@ -7,6 +7,8 @@ import lamp from '../../lamp.png';
 import agua from '../../drop.png';
 import presenca from '../../presenca.png';
 import lampOff from '../../lampOFF.png';
+import umidade from '../../umidade.png';
+
 import '../estilo.css';
 import { IoIosBrush, IoIosCloseCircle } from 'react-icons/io';
 
@@ -20,11 +22,14 @@ export class Local extends React.Component {
       sensoresDeAguaDisponiveis: [],
       lugaresDisponiveis: [],
       listaDePresenca: [],
+      listaDeUmidade: [],
       idSelecionado: '',
       emailParam:'',
       location: this.props.location.state.location,
       selectOne: '',
-      selectOne2:''
+      selectOne2:'',
+      selectOne3:'',
+      selectOne4:''
     };
   }
 
@@ -45,6 +50,7 @@ export class Local extends React.Component {
     var lugaresDisponiveis = this.state.lugaresDisponiveis;
     var sensoresDeAguaDisponiveis = this.state.sensoresDeAguaDisponiveis;
     var listaDePresenca = this.state.listaDePresenca;
+    var listaDeUmidade = this.state.listaDeUmidade;
 
     let e = this;
 
@@ -158,6 +164,37 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 })
 
+
+
+
+//sensores de presença
+firebase.auth().onAuthStateChanged(function(user) {
+  let firebaseGET = firebase.database().ref(`/usuarios/${user.uid}/umidade`)
+
+  firebaseGET.on('value', (snap) => {
+    var umidade = [];
+
+    snap.forEach((child) => {
+
+      if(e.state.location == child.val().location) {
+          umidade.push({
+            id: child.val().id,
+            location: child.val().location,
+            status: child.val().status
+          })
+      } else {
+        return null
+      }
+
+    })
+
+    listaDeUmidade = umidade
+    e.setState({listaDeUmidade: umidade})
+  })
+
+
+})
+
   }
 
 
@@ -239,6 +276,14 @@ deletarPresenca(e) {
 })
 }
 
+deletarUmidade(e) {
+  firebase.auth().onAuthStateChanged(function(user) {
+    firebase.database().ref(`/usuarios/${user.uid}/umidade/${e}`).remove()
+})
+}
+
+
+
 //SELECIONAR LUGAR LAMPADA
 onValueChangePlace = (e, c) => {
   firebase.auth().onAuthStateChanged(function(user) {
@@ -249,6 +294,8 @@ onValueChangePlace = (e, c) => {
   console.log('id one: ' + c)
   this.setState({selectOne: e.target.value})
 }
+
+
 
 
 //SELECIONAR LUGAR SENSOR DE ÁGUA
@@ -263,13 +310,39 @@ onValueChangePlaceWater = (e, c) => {
 }
 
 
+//SELECIONAR LUGAR SENSOR DE PRESENÇA
+onValueChangePresenca = (e, c) => {
+  firebase.auth().onAuthStateChanged(function(user) {
+    firebase.database().ref(`/usuarios/${user.uid}/presenca/${c}`).update({location: e})
+  })
+
+  console.log('select one: ' + e)
+  console.log('id one: ' + c)
+  this.setState({selectOne3: e.target.value})
+}
+
+
+
+//SELECIONAR LUGAR SENSOR DE UMIDADE
+onValueChangeUmidade = (e, c) => {
+  firebase.auth().onAuthStateChanged(function(user) {
+    firebase.database().ref(`/usuarios/${user.uid}/umidade/${c}`).update({location: e})
+  })
+
+  console.log('select one: ' + e)
+  console.log('id one: ' + c)
+  this.setState({selectOne4: e.target.value})
+}
+
+
 
   renderListOfSensors() {
     const lampadasDisponiveis = this.state.lampadasDisponiveis;
     const sensoresDeAguaDisponiveis = this.state.sensoresDeAguaDisponiveis;
     const lugaresDisponiveis = this.state.lugaresDisponiveis;
     const listaDePresenca = this.state.listaDePresenca;
-    
+    const listaDeUmidade = this.state.listaDeUmidade;
+
     return(
     <Page  title='Sensores e Atuadores'>
       <Panel className='caixa2'>
@@ -407,9 +480,9 @@ onValueChangePlaceWater = (e, c) => {
                                   <Col>
                                     <Select
                                       placeholder={l.location}
-                                      value={this.state.selectOne2}
+                                      value={this.state.selectOne3}
                                       options={lugaresDisponiveis}
-                                      onChange={value => this.onValueChangePlaceWater(value, l.id)}
+                                      onChange={value => this.onValueChangePresenca(value, l.id)}
                                       />
                                   </Col>
                               </Row>
@@ -422,6 +495,59 @@ onValueChangePlaceWater = (e, c) => {
 
                         <td>
                           <a href='#' onClick={() => this.deletarPresenca(l.id)}>
+                            <IoIosCloseCircle size={25} style={{marginTop: 10, marginLeft:10}} color='#e85656'/>
+                          </a>
+                        </td>
+
+                </TableRow>
+          ))}
+          </TableBody>
+        </Table>
+        <Row>
+        </Row>
+      </Panel>
+
+
+
+
+
+      <Panel className='caixa2'>
+        <Table>
+          <TableHead>
+            <th>Sensor</th>
+            <th>Lugar</th>
+            <th>Status</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Deletar</th>
+          </TableHead>
+          <TableBody>
+          {listaDeUmidade.map(l => (
+                <TableRow>
+                    <td> 
+                        <img src={umidade} style={{width: 30, height: 40, marginTop: 10,  marginBottom: 10}} />
+                    </td>
+                        <td>
+                              <Row>
+                                  <Col>
+                                    <Select
+                                      placeholder={l.location}
+                                      value={this.state.selectOne4}
+                                      options={lugaresDisponiveis}
+                                      onChange={value => this.onValueChangeUmidade(value, l.id)}
+                                      />
+                                  </Col>
+                              </Row>
+                        </td>
+                    <td>{l.status}</td>
+
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                        <td>
+                          <a href='#' onClick={() => this.deletarUmidade(l.id)}>
                             <IoIosCloseCircle size={25} style={{marginTop: 10, marginLeft:10}} color='#e85656'/>
                           </a>
                         </td>
