@@ -29,7 +29,7 @@ import { NotificationsDemo } from 'src/page/notifications-demo';
 import { NotFound } from 'src/page/not-found';
 
 // Redirect is got GH pages and can be deleted for forked projects
-const redirect = <Redirect from="/react-webpack-skeleton" to="/login" />;
+const redirect = <Redirect from="/react-webpack-skeleton" to="/" />;
 
 export const AppRouter = (
   <Router history={browserHistory}>

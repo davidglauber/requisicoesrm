@@ -82,14 +82,22 @@ function makeid(length) {
 //sensor de presença
  exports.presenca = functions.https.onRequest((request, response) => {
     const id = makeid(19);
+    const id2 = makeid(19);
     console.log('seu id: ' + id)
   
     let refPresenca = admin.database().ref(`usuarios/${request.query.id}/presenca`).child(`${id}`);
+    let refLampada = admin.database().ref(`usuarios/${request.query.id}/lampadas`).child(`${id2}`);
   
     refPresenca.push({
         movimento:"SEM MOVIMENTO",
         location: "PADRAO",
         id: id
+    })
+
+    refLampada.push({
+        status:"OFF",
+        location: "PADRAO",
+        id: id2
     })
     
     refPresenca.set({
@@ -107,6 +115,25 @@ function makeid(length) {
           text
       })
     })
+
+
+
+
+    refLampada.set({
+        status:"OFF",
+        location: "PADRAO",
+        id: id2
+      }).then(() => {
+          response.json({
+              message: 'Sensor de presença cadastrado com sucesso!',
+              id2
+          })
+      }).catch(() => {
+        response.json({
+            message: 'que bad, não foi dessa vez :(',
+            text
+        })
+      })
    });
 
 

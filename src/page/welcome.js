@@ -213,13 +213,14 @@ export class Welcome extends React.Component {
 
 
     return (
-      <Page title="Controle e Informações">
+      <Page title="Controle e Informações" >
+        <div style={{flex:1, flexDirection: "row"}}>
         <Button type='success' title="Criar Local" icon={<i className='fa fa-plus' />} onClick={e => this.onRenderModal('customizedModal1')}/>
-        <Row>
-          <div style={{flexDirection: "column"}}>
+        
+        <Row style={{flex:1, flexDirection: "row"}}>
 
           {lugaresDisponiveis.map(l => (
-              <Col>
+              <Col padding={5}>
                 <Panel>
                   <div style={{flexDirection: 'row'}}>
                     <Link to={{
@@ -234,6 +235,8 @@ export class Welcome extends React.Component {
                 </Panel>
               </Col>
           ))}
+      </Row>
+      <Row style={{flex:1, flexDirection: "row"}}>
 
             <Col padding={5}>
               <Panel title='Lâmpadas'  className="caixa"> 
@@ -316,11 +319,12 @@ export class Welcome extends React.Component {
                   </Col>
                 </Row>
             </Modal>
-        </div>    
+
         </Row>
 
         <Row>
         </Row>
+        </div>
       </Page>
     );
   }
